@@ -2,18 +2,21 @@
 
 // Local
 #include "EventManager.h"
+#include "Loader.h"
 
 // Third-party
 #include <GLFW\glfw3.h>
 
 // Standard
-#include <iostream>
+#include <iostream> 
 
 // Namespaces
 using namespace std;
 
 // Static variables
 GLFWwindow* Renderer::pWindow = 0;
+vector<unsigned int> Renderer::shaderIDs;
+unsigned int Renderer::currentShaderIndex;
 
 void Renderer::initialize()
 {
@@ -35,6 +38,12 @@ void Renderer::initialize()
 
 	// Fragments that are closest to the camera are accepted
 	glDepthFunc(GL_LESS);
+
+	// Load program shaders
+	shaderIDs.push_back(Loader::LoadShaders("../Source/Shaders/Default.vertexshader", "../Source/Shaders/Default.fragmentshader"));
+
+	// Set default shader
+	currentShaderIndex = DEFAULT_SHADER;
 }
 
 void Renderer::terminate()
@@ -53,4 +62,15 @@ void Renderer::endFrame()
 {
 	// Swap the front and back buffers
 	glfwSwapBuffers(pWindow);
+}
+
+unsigned int Renderer::getCurrentShaderID()
+{
+	return shaderIDs[currentShaderIndex];
+}
+
+void Renderer::setCurrentShaderType(ShaderType shaderType)
+{
+	if (shaderType >= 0 && shaderType < shaderIDs.size())
+		currentShaderIndex = shaderType;
 }

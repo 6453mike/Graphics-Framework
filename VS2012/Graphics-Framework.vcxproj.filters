@@ -21,6 +21,9 @@
     <Filter Include="Resource Files\Scenes">
       <UniqueIdentifier>{3b2e1119-c64d-494f-9840-6ae6746aa7bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{3498596a-9abf-4eb3-883c-fc6072fd5b21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\EventManager.cpp">
@@ -52,5 +55,16 @@
     <ClInclude Include="..\Source\World.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Loader.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Source\Shaders\Default.fragmentshader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Shaders\Default.vertexshader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
