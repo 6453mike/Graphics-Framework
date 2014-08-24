@@ -1,10 +1,14 @@
+// Local
 #include "Renderer.h"
 #include "EventManager.h"
+#include "World.h"
 
 int main(int argc, char*argv[])
 {
 	EventManager::initialize();
 	Renderer::initialize();
+
+	World world;
 
 	// The Loop
 	do
@@ -12,9 +16,11 @@ int main(int argc, char*argv[])
 		EventManager::update();
 
 		float deltaTime = EventManager::getFrameTime();
+		world.update(deltaTime);
 		
-
-	} while (EventManager::isExitRequested() == false);
+		world.draw();
+	}
+	while (EventManager::isExitRequested() == false);
 
 	Renderer::terminate();
 	EventManager::terminate();

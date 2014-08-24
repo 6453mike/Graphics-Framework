@@ -41,6 +41,15 @@
     <ClCompile Include="..\Source\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Models\Model.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Models\Sphere.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\StaticCamera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\EventManager.h">
@@ -57,6 +66,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Loader.h">
       <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Models\Model.h">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Models\Sphere.h">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\StaticCamera.h">
+      <Filter>Source Files\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
