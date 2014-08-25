@@ -11,12 +11,12 @@ Camera::~Camera()
 {
 }
 
-mat4 Camera::getViewProjectionMatrix() const
+mat4 Camera::getViewProjectionTransform() const
 {
-	return getViewMatrix() * getProjectionMatrix();
+	return getViewTransform() * getProjectionTransform();
 }
 
-mat4 Camera::getProjectionMatrix() const
+mat4 Camera::getProjectionTransform() const
 {
-	return perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	return perspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 }

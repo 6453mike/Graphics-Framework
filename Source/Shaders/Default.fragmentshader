@@ -7,6 +7,9 @@ uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w:
 uniform vec3 lightColor;
 uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
 
+uniform float spotLightCutOff;
+uniform float spotLightDecay;
+in vec3 spotLightDirection;
 
 // Inputs
 in vec3 v_color;		 // vertex color: also diffuse color
@@ -20,11 +23,60 @@ in vec4 lightVector;     // Vector from the vertex to the Light in View Space
 // Ouput data
 out vec3 color;
 
-
 void main()
 {
-	// Implment Phong Shading based on the parameters above
-	// Remember that directional light don't have attenuation
+
 	
-	color = v_color;
+	vec3 lightDirection;
+	float attenuation;
+
+	if (lightVector.w > 0.0) // Point or spot
+	{
+		// The distance between the light source and the vertex
+		float distance = length(vec3(lightVector));
+
+		// The attenuation calculation based off the inverse quadratic
+		attenuation = 1.0 / (lightAttenuation.x + (lightAttenuation.y * distance) + (lightAttenuation.z * distance * distance));
+	
+		lightDirection = normalize(vec3(lightVector));
+
+		if (spotLightCutOff <= 90.0)
+		{
+			float spotLightCosine = max(dot(-lightDirection, normalize(spotLightDirection)), 0.0);
+
+			if (spotLightCosine < cos(radians(spotLightCutOff)))
+			{
+				attenuation = 0.0;
+			}
+			else
+			{
+				attenuation = attenuation * pow(spotLightCosine, spotLightDecay);
+			}
+		}
+	}
+	else
+	{
+		attenuation = 1.0;
+		lightDirection = normalize(vec3(lightVector));
+	}
+
+	// Normal dot product with the light vector
+	float NL = max(dot(normal, lightDirection), 0.0);
+
+	// Light components
+	vec3 Ia = materialCoefficients.x * lightColor;
+	vec3 Id = materialCoefficients.y * NL * lightColor;
+	vec3 Is = vec3(0, 0, 0);
+
+	// If NL is equal to zero, then the Normal and Light vectors are either ortogonal or pointing in opposite directions
+	if (false)//NL > 0.0)
+	{
+		// The reflected ray vector
+		vec3 R = normalize(((2 * NL) * normal) - normalize(lightDirection));
+		float ER = max(dot(eyeVector, R), 0);
+
+		Is = materialCoefficients.z * pow(ER, materialCoefficients.w) * lightColor;
+	}
+
+	color = (Ia + (attenuation * (Id + Is))) * v_color;
 }

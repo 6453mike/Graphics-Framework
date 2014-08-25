@@ -16,7 +16,7 @@ void StaticCamera::update(float deltaTime)
 {
 }
 
-mat4 StaticCamera::getViewMatrix() const
+mat4 StaticCamera::getViewTransform() const
 {
 	return lookAt(position, lookAtPosition, upVector);
 }

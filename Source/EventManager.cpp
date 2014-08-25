@@ -13,7 +13,12 @@ using namespace std;
 GLFWwindow* EventManager::pWindow = 0;
 
 double EventManager::previousFrameTime = glfwGetTime();
-float  EventManager::frameTime = 0.0f;
+float EventManager::frameTime = 0.0f;
+
+float EventManager::mouseDeltaX = 0.0f;
+float EventManager::mouseDeltaY = 0.0f;
+float EventManager::previousMousePositionX = 0.0f;
+float EventManager::previousMousePositionY = 0.0f;
 
 void EventManager::initialize()
 {
@@ -51,10 +56,28 @@ void EventManager::update()
 	// Update inputs
 	glfwPollEvents();
 
+	// Update mouse info
+	double x, y;
+	glfwGetCursorPos(pWindow, &x, &y);
+	mouseDeltaX = static_cast<float>(x - previousMousePositionX);
+	mouseDeltaY = static_cast<float>(y - previousMousePositionY);
+	previousMousePositionX = x;
+	previousMousePositionY = y;
+
 	// Update the delta time
 	double currentTime = glfwGetTime();
 	frameTime = static_cast<float>(currentTime - previousFrameTime);
 	previousFrameTime = currentTime;
+}
+
+void EventManager::enableMouseCursor()
+{
+	glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void EventManager::disableMouseCursor()
+{
+	glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 GLFWwindow* EventManager::getWindow()
@@ -65,6 +88,16 @@ GLFWwindow* EventManager::getWindow()
 float EventManager::getFrameTime()
 {
 	return frameTime;
+}
+
+float EventManager::getMouseDeltaX()
+{
+	return mouseDeltaX;
+}
+
+float EventManager::getMouseDeltaY()
+{
+	return mouseDeltaY;
 }
 
 bool EventManager::isExitRequested()

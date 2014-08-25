@@ -11,7 +11,7 @@ public:
 
 	virtual void update(float deltaTime);
 
-	virtual mat4 getViewMatrix() const;
+	virtual mat4 getViewTransform() const;
 
 private:
 	vec3 position;

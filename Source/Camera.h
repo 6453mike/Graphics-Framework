@@ -14,9 +14,9 @@ public:
 
 	virtual void update(float deltaTime) = 0;
 
-	virtual mat4 getViewMatrix() const = 0;
-	virtual mat4 getProjectionMatrix() const;
-	mat4 getViewProjectionMatrix() const;
+	virtual mat4 getViewTransform() const = 0;
+	virtual mat4 getProjectionTransform() const;
+	mat4 getViewProjectionTransform() const;
 private:
 
 };

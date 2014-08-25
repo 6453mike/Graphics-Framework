@@ -20,8 +20,11 @@ uniform mat4 ViewTransform;
 uniform mat4 ProjectonTransform;
 
 // light position
-uniform vec4 WorldLightPosition; // if w = 1: Point light, if w = 0: directional light
+uniform vec4 WorldLightPosition;
 
+// Light direction
+uniform vec3 direction;
+out vec3 spotLightDirection;
 
 void main()
 {
@@ -32,10 +35,20 @@ void main()
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	v_color = vertexColor;
 
-	// Prepare Data for Fragment Shader
-	// Should the normal be transformed?
-	normal = vertexNormal_modelspace;
-	
-	// eyeVector = ...
-	// lightVector = ...
+	spotLightDirection = vec3(ViewTransform * vec4(direction, 0));
+
+	normal = normalize(vec3(transpose(inverse(MV)) * vec4(vertexNormal_modelspace, 0)));
+
+	vec4 vertexPosition_viewspace = MV * vec4(vertexPosition_modelspace, 1);
+
+	eyeVector = normalize(-vec3(vertexPosition_viewspace));
+
+	if (WorldLightPosition.w > 0.0) // Point or Spot
+	{
+		lightVector = vec4(vec3((ViewTransform * WorldLightPosition) - vertexPosition_viewspace), 1.0);
+	}
+	else // Directional
+	{
+		lightVector = vec4(vec3(ViewTransform * WorldLightPosition), 0);
+	}
 }
