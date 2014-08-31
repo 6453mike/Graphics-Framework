@@ -1,82 +1,92 @@
 #version 330 core
 
+in vec3 vertexPosition;
+in vec3 vertexNormal;
+in vec3 vertexColor;
 
-// Light and Material Uniform Variables
-uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w: specular exponent
+out vec3 finalColor;
 
-uniform vec3 lightColor;
-uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
+struct Light
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec4 position;
+	vec3 direction;
+	float cutoff, exponent;
+	float constantAttenuation, linearAttenuation, quadraticAttenuation;
+};
 
-uniform float spotLightCutOff;
-uniform float spotLightDecay;
-in vec3 spotLightDirection;
+struct Material
+{
+	float ambient;
+	float diffuse;
+	float specular;
+	float shininess;
+};
 
-// Inputs
-in vec3 v_color;		 // vertex color: also diffuse color
+uniform vec3 sceneAmbient;
+uniform Light lights[2];
+uniform Material material;
 
-in vec3 normal;          // Transformed normal in View Space
-in vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
-in vec4 lightVector;     // Vector from the vertex to the Light in View Space
-						 // Length of lightVector is the distance between light and vertex
-						 // if w = 1: Point light, if w = 0: directional light
-
-// Ouput data
-out vec3 color;
+uniform mat4 ViewTransform;
 
 void main()
 {
+	vec3 normalVector = normalize(vertexNormal);
+	vec3 eyeVector = normalize(vec3(inverse(ViewTransform)[3]) - vertexPosition);
+	vec3 lightVector;
 
-	
-	vec3 lightDirection;
-	float attenuation;
+	float attenuation = 0.0;
 
-	if (lightVector.w > 0.0) // Point or spot
+	vec3 totalColor = sceneAmbient * material.ambient;
+
+	for (int i = 0; i < 2; i++)
 	{
-		// The distance between the light source and the vertex
-		float distance = length(vec3(lightVector));
-
-		// The attenuation calculation based off the inverse quadratic
-		attenuation = 1.0 / (lightAttenuation.x + (lightAttenuation.y * distance) + (lightAttenuation.z * distance * distance));
-	
-		lightDirection = normalize(vec3(lightVector));
-
-		if (spotLightCutOff <= 90.0)
+		if (int(lights[i].position.w) == 0) // Directional light
 		{
-			float spotLightCosine = max(dot(-lightDirection, normalize(spotLightDirection)), 0.0);
+			attenuation = 1.0;
+			lightVector = normalize(vec3(lights[i].position));
+		}
+		else // Point light or spot light
+		{
+			lightVector = vec3(lights[i].position) - vertexPosition;
 
-			if (spotLightCosine < cos(radians(spotLightCutOff)))
+			float distance = length(lightVector);
+			lightVector = normalize(lightVector);
+
+			attenuation = 1.0 / (lights[i].constantAttenuation +
+								lights[i].linearAttenuation * distance +
+								lights[i].quadraticAttenuation * distance * distance);
+
+			if (lights[i].cutoff <= 90.0) // Spot light
 			{
-				attenuation = 0.0;
-			}
-			else
-			{
-				attenuation = attenuation * pow(spotLightCosine, spotLightDecay);
+				float cosAngle = max(dot(-lightVector, normalize(lights[i].direction)), 0.0);
+
+				if (cosAngle >= cos(radians(lights[i].cutoff))) // In the spot light
+				{
+					attenuation = attenuation * pow(cosAngle, lights[i].exponent);
+				}
+				else
+				{
+					attenuation = 0.0;
+				}
 			}
 		}
-	}
-	else
-	{
-		attenuation = 1.0;
-		lightDirection = normalize(vec3(lightVector));
-	}
 
-	// Normal dot product with the light vector
-	float NL = max(dot(normal, lightDirection), 0.0);
+		float nDotL = max(dot(normalVector, lightVector), 0.0);
 
-	// Light components
-	vec3 Ia = materialCoefficients.x * lightColor;
-	vec3 Id = materialCoefficients.y * NL * lightColor;
-	vec3 Is = vec3(0, 0, 0);
+		vec3 Id = attenuation * lights[i].diffuse * material.diffuse * nDotL;
+		vec3 Is = vec3(0.0, 0.0, 0.0);
 
-	// If NL is equal to zero, then the Normal and Light vectors are either ortogonal or pointing in opposite directions
-	if (false)//NL > 0.0)
-	{
-		// The reflected ray vector
-		vec3 R = normalize(((2 * NL) * normal) - normalize(lightDirection));
-		float ER = max(dot(eyeVector, R), 0);
+		if (nDotL > 0)
+		{
+			Is = attenuation * lights[i].specular * material.specular *
+				pow(max(dot(reflect(-lightVector, normalVector), eyeVector), 0.0), material.shininess);
+		}
 
-		Is = materialCoefficients.z * pow(ER, materialCoefficients.w) * lightColor;
+		totalColor = totalColor + Id + Is;		
 	}
 
-	color = (Ia + (attenuation * (Id + Is))) * v_color;
+	finalColor = totalColor * vertexColor;
 }

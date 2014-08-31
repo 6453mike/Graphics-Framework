@@ -1304,8 +1304,14 @@ void Sphere::draw()
 	GLuint WorldMatrixID = glGetUniformLocation(Renderer::getCurrentShaderID(), "WorldTransform");
 	glUniformMatrix4fv(WorldMatrixID, 1, GL_FALSE, &getWorldTransform()[0][0]);
 
-	GLuint MaterialID = glGetUniformLocation(Renderer::getCurrentShaderID(), "materialCoefficients");
-	glUniform4f(MaterialID, ka, kd, ks, n);
+	GLuint ambientID = glGetUniformLocation(Renderer::getCurrentShaderID(), "material.ambient");
+	GLuint diffuseID = glGetUniformLocation(Renderer::getCurrentShaderID(), "material.diffuse");
+	GLuint specularID = glGetUniformLocation(Renderer::getCurrentShaderID(), "material.specular");
+	GLuint shininessID = glGetUniformLocation(Renderer::getCurrentShaderID(), "material.shininess");
+	glUniform1f(ambientID, ka);
+	glUniform1f(diffuseID, kd);
+	glUniform1f(specularID, ks);
+	glUniform1f(shininessID, n);
 
 	// 1st attribute buffer : vertex Positions
 	glEnableVertexAttribArray(0);

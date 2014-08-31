@@ -33,4 +33,10 @@ protected:
 	vec3 scaling;
 	vec3 rotationAxis;
 	float rotationAngleInDegrees;
+
+	// Material coefficients default values
+	const float ka = 0.1f;
+	const float kd = 0.8f;
+	const float ks = 0.9f;
+	const float n = 100.0f;
 };

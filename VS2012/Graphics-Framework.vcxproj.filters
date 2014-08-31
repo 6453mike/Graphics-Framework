@@ -56,6 +56,9 @@
     <ClCompile Include="..\Source\FirstPersonCamera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Models\Cube.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\EventManager.h">
@@ -87,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\FirstPersonCamera.h">
       <Filter>Source Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Models\Cube.h">
+      <Filter>Source Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

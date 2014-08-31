@@ -3,11 +3,11 @@
 // Local
 #include "Model.h"
 
-class Sphere : public Model
+class Cube : public Model
 {
 public:
-	Sphere();
-	virtual ~Sphere();
+	Cube(glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f));
+	virtual ~Cube();
 
 	virtual void update(float deltaTime);
 	virtual void draw();
@@ -16,20 +16,17 @@ private:
 	// The vertex format could be different for different types of models
 	struct Vertex
 	{
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec3 color;
+		vec3 position;
+		vec3 normal;
+		vec3 color;
 	};
-
-	unsigned int numberOfVertices;
 
 	unsigned int vertexArrayID;
 	unsigned int vertexBufferID;
 
 	// Material Coefficients
-	const float ka = 0.4f;
+	const float ka = 0.2f;
 	const float kd = 0.8f;
-	const float ks = 0.9f;
-	const float n = 100.0f;
+	const float ks = 0.2f;
+	const float n = 50.0f;
 };
-
