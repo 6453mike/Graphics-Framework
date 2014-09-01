@@ -94,6 +94,9 @@
     <ClInclude Include="..\Source\Models\Cube.h">
       <Filter>Source Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\ShaderStrings.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Shaders\Default.fragmentshader">

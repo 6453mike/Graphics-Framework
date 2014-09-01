@@ -16,9 +16,9 @@ private:
 	// The vertex format could be different for different types of models
 	struct Vertex
 	{
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec3 color;
+		vec3 position;
+		vec3 normal;
+		vec3 color;
 	};
 
 	unsigned int numberOfVertices;
